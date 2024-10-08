@@ -1,0 +1,41 @@
+# crud_quadro_societario
+
+
+
+## Getting started
+
+Esse é meu projeto para a vox Tecnologia, onde fiz um crud de quadro societario
+
+Nesse projeto fiz uma relação no banco de dados entre  a tabela empresa e a tabela socios para fins de adicionar a participação
+
+No cadastro de usuario tem as rotas /user/first_access e /user/store
+
+A first_access é o primeiro usuario a ser cadastrado, vai ser um Super Admin, onde terá acesso total ao sistema
+
+Já a outra rota é um usuario comum, que vai conseguir cadastrar empresas e socios, e adicionar sociedade, mas não irá conseguir excluir uma empresa ou sócio
+
+O projeto foi feito em symfony, está dentro da pasta vox-quadro-societario-back
+para rodar e necessario os comandos
+
+1 - Composer install
+
+2 - no Postgree, criar um banco de dados "QuadroSocietario"
+
+3 - symfony console doctrine:migration:migrate
+
+4 - symfony serve
+
+No arquivo .env tem o caminho da chave do jwt, é necessario alterar para a chave do PC que for clonado esse projeto. Caminhos diferentes.
+
+o front foi feito em React, para rodar o projeto e necessario rodar dois comandos
+
+1- npm install
+
+2 - npm start
+
+Para adicionar uma sociedade, é necessario que, em detalhes da empresa, seja adicionado um socio. Ou em detalhes de um socio adicionar sociedade a uma empresa.
+
+Fiz isso pois imaginei que que um socio pode ser socio de varias empresas
+
+Desde já, agradeço a oportunidade de deixar eu mostrar meus conhecimentos :-)
+E a documentação da api está em APIDOC.md
