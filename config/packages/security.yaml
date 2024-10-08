@@ -1,0 +1,56 @@
+security:
+    password_hashers:
+        App\Entity\Users: 'auto'
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            algorithm: 'auto'
+            cost:      15
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\Users
+                property: email
+    firewalls:
+        login:
+            pattern: ^/user/login
+            stateless: true
+            json_login:
+                check_path: /user/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+   
+        api:
+            pattern:   ^/
+            stateless: true
+            jwt: ~
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+   
+    access_control:
+        - { path: ^/, roles: PUBLIC_ACCESS }
+        - { path: ^/user/, roles: PUBLIC_ACCESS  }
+        - { path: ^/user/login, roles: PUBLIC_ACCESS  }
+        - { path: ^/user/first_access, roles: PUBLIC_ACCESS  }
+        - { path: ^/user/list, roles: ROLE_ADMIN  }
+        - { path: ^/user/store, roles: ROLE_ADMIN  }
+
+
+        
+        - { path: ^/partner/list, roles: ROLE_USER }
+        - { path: ^/partner/show/, roles: ROLE_USER }
+        - { path: ^/partner/store/, roles: ROLE_ADMIN }
+        - { path: ^/partner/update/, roles: ROLE_ADMIN }
+        - { path: ^/partner/delete/, roles: ROLE_ADMIN }
+        
+        - { path: ^/company/list, roles: ROLE_USER }
+        - { path: ^/company/show/, roles: ROLE_USER }
+        - { path: ^/company/store/, roles: ROLE_ADMIN }
+        - { path: ^/company/update/, roles: ROLE_ADMIN }
+        - { path: ^/company/delete/, roles: ROLE_ADMIN }
+        
+        - { path: ^/partner_company/store/, roles: ROLE_ADMIN }
+        - { path: ^/partner_company/update/, roles: ROLE_ADMIN }
+        - { path: ^/partner_company/delete/, roles: ROLE_ADMIN }
