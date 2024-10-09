@@ -311,25 +311,28 @@ Header: Authorization <BEARER_TOKEN>
 
   ```json
     {
-        "fantasy_name":"Empreendimentos Correia 2",
-        "company_name":"Correia Arruda Empreendimentos LTDA",
-        "cnpj":"86543151000101",
-        "opening_date":"2019-04-28",
-        "phone_number":"11963857945",
-        "invoicing":25.00
+      "fantasy_name":"Empreendimentos Correia 2",
+      "company_name":"Correia Arruda Empreendimentos LTDA",
+      "cnpj":"86543151000101",
+      "opening_date":"2019-04-28",
+      "phone_number":"11963857945",
+      "invoicing":25.00
     }
+  ```
 
 
 **Respostas:**
 
 - **200 OK**
 
-  ```json{
-        "code": 200,
-        "data": [],
-        "message": "Empresa editada com sucesso",
-        "status": "success"
+  ```json
+    {
+      "code": 200,
+      "data": [],
+      "message": "Empresa editada com sucesso",
+      "status": "success"
     }
+  ```
 
 
 ### Endpoint 10: Remoção de Empresas
@@ -349,12 +352,14 @@ Valido para autorização ROLE_ADMIN
 
 - **200 OK**
 
-  ```json{
-        "code": 200,
-        "data": [],
-        "message": "Empresa removida com sucesso",
-        "status": "success"
-    }
+  ```json
+  {
+      "code": 200,
+      "data": [],
+      "message": "Empresa removida com sucesso",
+      "status": "success"
+  }
+  ```
 
 
 ### Endpoint 11: Lista de Socios
@@ -372,25 +377,26 @@ Header: Authorization <BEARER_TOKEN>
 - **200 OK**
 
   ```json
-  {
-    "data": [
-        {
-            "id": 2,
-            "name": "SEUNOME",
-            "last_name": "SEUSOBRENOME",
-            "email": "email@email.com",
-            "cpf": "25698745236",
-            "phone_number": "11970704040",
-            "created_at": {
-                "date": "2024-09-02 11:00:08.000000",
-                "timezone_type": 3,
-                "timezone": "UTC"
+    {
+        "data": [
+            {
+                "id": 2,
+                "name": "SEUNOME",
+                "last_name": "SEUSOBRENOME",
+                "email": "email@email.com",
+                "cpf": "25698745236",
+                "phone_number": "11970704040",
+                "created_at": {
+                    "date": "2024-09-02 11:00:08.000000",
+                    "timezone_type": 3,
+                    "timezone": "UTC"
+                }
             }
-        }
-    ],
-    "currentPage": 1,
-    "totalPages": 1
-}
+        ],
+        "currentPage": 1,
+        "totalPages": 1
+      }
+    ```
 
 
 ### Endpoint 12: Consulta de sócio
@@ -441,6 +447,7 @@ Header: Authorization <BEARER_TOKEN>
         "message": "Socio encontrado com sucesso",
         "status": "success"
     }
+  ```
 
 
 ### Endpoint 13: Remoção de Sócio
@@ -460,12 +467,14 @@ Valido para autorização ROLE_ADMIN
 
 - **200 OK**
 
-  ```json{
+  ```json
+    {
         "code": 200,
         "data": [],
         "message": "Sócio removido com sucesso",
         "status": "success"
     }
+  ```
 
 
 
@@ -490,18 +499,21 @@ Header: Authorization <BEARER_TOKEN>
         "cpf":"84856232547",
         "phone_number":"11970704040"
     }
+  ```
 
 
 **Respostas:**
 
 - **200 OK**
 
-  ```json{
-        "code": 201,
-        "data": [],
-        "message": "Sócio cadastrada com sucesso",
-        "status": "success"
+  ```json
+    {
+      "code": 201,
+      "data": [],
+      "message": "Sócio cadastrada com sucesso",
+      "status": "success"
     }
+  ```
     
 
 
@@ -525,18 +537,21 @@ Header: Authorization <BEARER_TOKEN>
         "cpf":"84856232547",
         "phone_number":"11970704040"
     }
+  ```
 
 
 **Respostas:**
 
 - **200 OK**
 
-  ```json{
-        "code": 201,
-        "data": [],
-        "message": "Sócio cadastrada com sucesso",
-        "status": "success"
+  ```json
+    {
+      "code": 201,
+      "data": [],
+      "message": "Sócio cadastrada com sucesso",
+      "status": "success"
     }
+  ```
 
 
 
@@ -558,18 +573,21 @@ Header: Authorization <BEARER_TOKEN>
         "cpf":"84856232547",
         "participation":25
     }
+  ```
 
 
 **Respostas:**
 
 - **200 OK**
 
-  ```json{
+  ```json
+    {
         "code": 201,
         "data": [],
         "message": "Sociedade cadastrada com sucesso",
         "status": "success"
     }
+  ```
     
 
 ### Endpoint 17: Cadastro de Sóciedade por CNPJ 
@@ -590,18 +608,21 @@ Header: Authorization <BEARER_TOKEN>
         "cnpj":"84856232547",
         "participation":25
     }
+  ```
 
 
 **Respostas:**
 
 - **200 OK**
 
-  ```json{
-        "code": 201,
-        "data": [],
-        "message": "Sociedade cadastrada com sucesso",
-        "status": "success"
-    }
+  ```json
+    {
+          "code": 201,
+          "data": [],
+          "message": "Sociedade cadastrada com sucesso",
+          "status": "success"
+      }
+  ```
     
 
 ### Endpoint 18: Cadastro de Sóciedade 
@@ -622,18 +643,21 @@ Header: Authorization <BEARER_TOKEN>
         "company_id":2,
         "participation":25
     }
+  ```
 
 
 **Respostas:**
 
 - **200 OK**
 
-  ```json{
-        "code": 201,
-        "data": [],
-        "message": "Sociedade cadastrada com sucesso",
-        "status": "success"
+  ```json
+    {
+      "code": 201,
+      "data": [],
+      "message": "Sociedade cadastrada com sucesso",
+      "status": "success"
     }
+  ```
     
 
 
@@ -655,18 +679,21 @@ Header: Authorization <BEARER_TOKEN>
         "company_id":2,
         "participation":25
     }
+  ```
 
 
 **Respostas:**
 
 - **200 OK**
 
-  ```json{
-        "code": 201,
-        "data": [],
-        "message": "Sociedade editada com sucesso",
-        "status": "success"
+  ```json
+    {
+      "code": 201,
+      "data": [],
+      "message": "Sociedade editada com sucesso",
+      "status": "success"
     }
+  ```
     
 
 ### Endpoint 20: Remoção de Sociedade
@@ -683,10 +710,12 @@ Header: Authorization <BEARER_TOKEN>
 
 - **200 OK**
 
-  ```json{
+  ```json
+    {
         "code": 200,
         "data": [],
         "message": "Sociedade removida com sucesso",
         "status": "success"
     }
+  ```
 
