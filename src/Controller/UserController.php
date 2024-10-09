@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Users;
 use App\Form\UsersType;
+use App\Form\UsersTypeByUpdate;
 use App\Repository\UsersRepository;
 use App\Response\ErrorsFormResponse;
 use App\Response\JsonApiResponse;
@@ -100,6 +101,7 @@ class UserController extends AbstractController
     public function store(Request $request): JsonResponse
     {
         $data = $request->getContent();
+        $data_validate = json_decode($data, true);
 
         $userEntity = new Users();
         
@@ -107,10 +109,27 @@ class UserController extends AbstractController
         $form->submit(json_decode($data, true));
         
         if ($form->isSubmitted() && $form->isValid()) {
+            if(!array_key_exists("roles", $data_validate) || !$data_validate["roles"]){
+                $error_message = "O acesso é obrigatório";
+                return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+            }
+    
+            if($data_validate['roles'] != 'ROLE_USER' && $data_validate['roles'] != 'ROLE_ADMIN'){
+                $error_message = "O acesso é inválido";
+                return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+            }
+    
+            
+            if(!array_key_exists("password", $data_validate) || !$data_validate["password"]){
+                $error_message = "A senha é obrigatória";
+                return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+            }
+
+
             $dateTimeZone = new DateTimeZone('America/Sao_Paulo');
             
             $userEntity->setPassword($this->passwordManager->hashPassword($userEntity, $form->get('password')->getData()));
-            $userEntity->setRoles(['ROLE_ADMIN']);
+            //$userEntity->setRoles(['ROLE_ADMIN']);
             
             $userEntity->setCreatedAt(new DateTimeImmutable('now', $dateTimeZone));
             $userEntity->setUpdatedAt(new DateTimeImmutable('now', $dateTimeZone));
@@ -124,6 +143,62 @@ class UserController extends AbstractController
 
         $error_message = ErrorsFormResponse::getFirstFormError($form);
         return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+    }
+
+    
+    #[Route('/user/update/{id}', name: 'app_company_update', methods: ['PUT'])]
+    public function update($id, Request $request, UsersRepository $repository): Response
+    {
+        $userEntity = $repository->findOneById($id);
+
+        $data = $request->getContent();
+        $data = json_decode($data, true);
+
+        
+        if(array_key_exists("password", $data) && $data["password"]){
+            $form = $this->createForm(UsersType::class, $userEntity);
+        }
+        else{
+            $form = $this->createForm(UsersTypeByUpdate::class, $userEntity);
+        }
+
+        $form->submit($data);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            if(!array_key_exists("roles", $data) || !$data["roles"]){
+                $error_message = "O acesso é obrigatório";
+                return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+            }
+    
+            if($data['roles'] != 'ROLE_USER' && $data['roles'] != 'ROLE_ADMIN'){
+                $error_message = "O acesso é inválido";
+                return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+            }
+    
+            
+            if(array_key_exists("password", $data) && $data["password"]){
+                $userEntity->setPassword($this->passwordManager->hashPassword($userEntity, $form->get('password')->getData()));
+            }
+
+            $userEntity->setRoles([$data['roles']]);
+
+
+            $dateTimeZone = new DateTimeZone('America/Sao_Paulo');
+            
+            
+            $userEntity->setCreatedAt(new DateTimeImmutable('now', $dateTimeZone));
+            $userEntity->setUpdatedAt(new DateTimeImmutable('now', $dateTimeZone));
+
+            $this->entityManager->persist($userEntity);
+            $this->entityManager->flush();
+    
+            $success_message = "Usuario cadastrado com sucesso";
+            return JsonApiResponse::success($success_message, [], Response::HTTP_CREATED);
+        }
+
+        $error_message = ErrorsFormResponse::getFirstFormError($form);
+        return JsonApiResponse::error($error_message, Response::HTTP_CREATED);
+
     }
 
     #[Route('/user/login', name: 'app_user_login', methods: ['POST'])]
@@ -169,5 +244,23 @@ class UserController extends AbstractController
         $success_message = "Usuário encontrado";
         $data_request = ['status' => 'success', 'user' => $user->toArray()];
         return JsonApiResponse::success($success_message, $data_request, Response::HTTP_OK);
+    }
+
+    #[Route('/user/delete/{id}', name: 'app_user_delete', methods: ['DELETE'])]
+    public function delete($id, UsersRepository $repository): Response
+    {
+        $companyEntity = $repository->findOneById($id);
+
+        if(!$companyEntity){
+            $error_message = "Usuário não encontrado";
+            return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->remove($companyEntity);
+        $this->entityManager->flush();
+
+        
+        $success_message = "Usuário excluido com sucesso";
+        return JsonApiResponse::success($success_message, [], Response::HTTP_CREATED);
     }
 }

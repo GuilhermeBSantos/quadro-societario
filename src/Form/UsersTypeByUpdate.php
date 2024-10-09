@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
-class UsersType extends AbstractType
+class UsersTypeByUpdate extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -39,19 +39,6 @@ class UsersType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'O e-mail é obrigatório.']),
                     new Assert\Email(['message' => 'O e-mail "{{ value }}" é invalido.']),
-                ],
-            ])
-            ->add('password', TextType::class, [
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'A senha não é valida.']),
-                    new Assert\Length([
-                        'min' => 7,
-                        'minMessage' => 'A senha deve ter pelo menos {{ limit }} caracteres.',
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/[A-Z]/',
-                        'message' => 'A senha deve conter pelo menos uma letra maiúscula.',
-                    ]),
                 ],
             ]);
     }

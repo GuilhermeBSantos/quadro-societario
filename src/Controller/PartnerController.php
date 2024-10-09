@@ -24,28 +24,23 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class PartnerController extends AbstractController
 {
-    private $jwtManager;
     private $entityManager;
-    private $passwordManager;
 
-    public function __construct(
-                                JWTTokenManagerInterface $jwtManager,
-                                EntityManagerInterface $entityManager, 
-                                UserPasswordHasherInterface $passwordManager
-                                )
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->jwtManager = $jwtManager;
         $this->entityManager = $entityManager;
-        $this->passwordManager = $passwordManager;
     }
 
     #[Route('/partner/list', name: 'app_partner_list', methods: ['GET'])]
     public function list(Request $request, PartnerRepository $partnerRepository): Response
     {
         $page = $request->query->getInt('page', 1);
-        $limit = 10; // Número de itens por página
+        $limit = 10;
 
-        $paginator = $partnerRepository->findPaginated($page, $limit);
+        $key = $request->query->getString('key');
+        $search = $request->query->getString('search');
+
+        $paginator = $partnerRepository->findPaginated($page, $limit, $key, $search);
         $totalItems = count($paginator);
         $totalPages = ceil($totalItems / $limit);
 
@@ -70,7 +65,7 @@ class PartnerController extends AbstractController
         $partner_data['companies'] = $partnerCompanyRepository->findCompanyByPartner($partner);
         
         $success_message = "Socio encontrado com sucesso";
-        return JsonApiResponse::success($success_message, [], Response::HTTP_CREATED);
+        return JsonApiResponse::success($success_message, $partner_data, Response::HTTP_CREATED);
     }
 
     #[Route('/partner/store', name: 'app_partner_store', methods: ['POST'])]
@@ -88,10 +83,10 @@ class PartnerController extends AbstractController
             $dateTimeZone = new DateTimeZone('America/Sao_Paulo');
 
             if(CPFValidator::isValidCpf($partnerEntity->getCpf()) == false){
-                $error_message = "Este cpf não é valido";
+                $error_message = "Este CPF não é valido";
                 return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
             }
-            
+
             $partnerEntity->setCreatedAt(new DateTimeImmutable('now', $dateTimeZone));
             $partnerEntity->setUpdatedAt(new DateTimeImmutable('now', $dateTimeZone));
 
@@ -141,13 +136,20 @@ class PartnerController extends AbstractController
     }
     
     #[Route('/partner/delete/{id}', name: 'app_partner_delete', methods: ['DELETE'])]
-    public function delete($id, PartnerRepository $partnerRepository): Response
+    public function delete($id, PartnerRepository $partnerRepository, PartnerCompanyRepository $partnerCompanyRepository): Response
     {
         $companyEntity = $partnerRepository->findOneById($id);
 
         if(!$companyEntity){
             $error_message = "Sócio não encontrado";
             return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+        }
+        //Remoção das sociedades
+        $items = $partnerCompanyRepository->findCompanyByPartner($companyEntity);
+
+        foreach ($items as $item) {
+            $companyPartnerEntity = $partnerCompanyRepository->findOneById((int)$item['PC_ID']);
+            $this->entityManager->remove($companyPartnerEntity);
         }
 
         $this->entityManager->remove($companyEntity);

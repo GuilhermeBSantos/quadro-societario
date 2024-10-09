@@ -26,10 +26,16 @@ class PartnerRepository extends ServiceEntityRepository
      * @param int $limit
      * @return Paginator
      */
-    public function findPaginated(int $page = 1, int $limit = 10): Paginator
+    public function findPaginated(int $page = 1, int $limit = 10, $key = '', $search = ''): Paginator
     {
-        $queryBuilder = $this->createQueryBuilder('p')
-                             ->orderBy('p.id', 'ASC');
+        $queryBuilder = $this->createQueryBuilder('p');
+
+        if($key !== ''){
+            $queryBuilder->where("p.$key like :param")
+                        ->setParameter('param', "$search");
+        }
+
+        $queryBuilder->orderBy('p.id', 'ASC');
 
         $query = $queryBuilder->getQuery();
         $query->setFirstResult(($page - 1) * $limit)
@@ -52,6 +58,15 @@ class PartnerRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.cpf like :cpf')
             ->setParameter('cpf', $cpf)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findOneByEmail($email): ?Partner
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.email like :email')
+            ->setParameter('email', $email)
             ->getQuery()
             ->getOneOrNullResult();
     }

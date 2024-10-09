@@ -26,10 +26,16 @@ class CompanyRepository extends ServiceEntityRepository
      * @param int $limit
      * @return Paginator
      */
-    public function findPaginated(int $page = 1, int $limit = 10): Paginator
+    public function findPaginated(int $page = 1, int $limit = 10, $key = '', $search = ''): Paginator
     {
-        $queryBuilder = $this->createQueryBuilder('c')
-                             ->orderBy('c.id', 'ASC');
+        $queryBuilder = $this->createQueryBuilder('c');
+
+        if($key !== ''){
+            $queryBuilder->where("c.$key like :param")
+                        ->setParameter('param', "$search");
+        }
+
+        $queryBuilder->orderBy('c.id', 'ASC');
 
         $query = $queryBuilder->getQuery();
         $query->setFirstResult(($page - 1) * $limit)
@@ -47,6 +53,7 @@ class CompanyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+    
     public function findOneByCnpj($cnpj): ?Company
     {
         return $this->createQueryBuilder('c')

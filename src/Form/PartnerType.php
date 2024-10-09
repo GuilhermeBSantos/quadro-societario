@@ -79,10 +79,12 @@ class PartnerType extends AbstractType
                 new UniqueEntity([
                     'entityClass' => Partner::class,
                     'fields' => 'cpf',
+                    'message' => 'Este CPF já está em uso. Por favor, verifique e tente novamente'
                 ]),
                 new UniqueEntity([
                     'entityClass' => Partner::class,
                     'fields' => 'email',
+                    'message' => 'Este email já está em uso. Por favor, verifique e tente novamente'
                 ]),
             ],
         ]);

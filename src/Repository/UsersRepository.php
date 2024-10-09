@@ -54,6 +54,15 @@ class UsersRepository extends ServiceEntityRepository
         return count($fields);
     }
 
+    public function findOneById($value): ?Users
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.id = :id')
+            ->setParameter('id', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
     public function findOneByEmail($value): ?Users
     {
         return $this->createQueryBuilder('u')

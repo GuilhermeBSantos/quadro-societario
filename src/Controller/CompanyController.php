@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Company;
+use App\Entity\PartnerCompany;
 use App\Form\CompanyType;
 use App\Repository\CompanyRepository;
 use App\Repository\PartnerCompanyRepository;
@@ -34,7 +35,11 @@ class CompanyController extends AbstractController
         $page = $request->query->getInt('page', 1);
         $limit = 10; // Número de itens por página
 
-        $paginator = $companyRepository->findPaginated($page, $limit);
+
+        $key = $request->query->getString('key');
+        $search = $request->query->getString('search');
+
+        $paginator = $companyRepository->findPaginated($page, $limit, $key, $search);
         $totalItems = count($paginator);
         $totalPages = ceil($totalItems / $limit);
 
@@ -42,7 +47,7 @@ class CompanyController extends AbstractController
             return $company->toArray();
         }, $paginator->getIterator()->getArrayCopy());
 
-        return new JsonResponse(JsonApiResponse::paginated($items, $page, $totalPages), Response::HTTP_OK);
+        return JsonApiResponse::paginated($items, $page, $totalPages);
     }
 
     #[Route('/company/show/{id}', name: 'app_company_show', methods: ['GET'])]
@@ -51,24 +56,15 @@ class CompanyController extends AbstractController
         $company = $companyRepository->findOneById($id);
 
         if(!$company){
-            return new JsonResponse(
-                JsonApiResponse::error(
-                    Response::HTTP_BAD_REQUEST,
-                    'Empresa não encontrada'
-                ), 
-            Response::HTTP_BAD_REQUEST);
+            $error_message = 'Empresa não encontrada';
+            return JsonApiResponse::error($error_message, Response::HTTP_CREATED);
         }
 
         $company_data = $company->toArray();
         $company_data['partners'] = $partnerCompanyRepository->findPartnerByCompany($company);
-        
-        return new JsonResponse(
-            JsonApiResponse::success(
-                Response::HTTP_OK,
-                $company_data,
-                'Empresa encontrada com sucesso'
-            ), 
-        Response::HTTP_OK, [], false);
+    
+        $success_message = "Empresa encontrada com sucesso";
+        return JsonApiResponse::success($success_message, $company_data, Response::HTTP_CREATED);
     }
 
     #[Route('/company/store', name: 'app_company_store', methods: ['POST'])]
@@ -102,17 +98,12 @@ class CompanyController extends AbstractController
             $this->entityManager->persist($companyEntity);
             $this->entityManager->flush();
     
-            return new JsonResponse(
-                            JsonApiResponse::success(Response::HTTP_CREATED, [], 'Empresa cadastrada com sucesso'), 
-                        Response::HTTP_CREATED, [], false);
+            $success_message = "Empresa cadastrada com sucesso";
+            return JsonApiResponse::success($success_message, [], Response::HTTP_CREATED);
         }
 
-        return new JsonResponse(
-            JsonApiResponse::error(
-                Response::HTTP_BAD_REQUEST,
-                ErrorsFormResponse::getFirstFormError($form)
-            ), 
-        Response::HTTP_BAD_REQUEST);
+        $error_message = ErrorsFormResponse::getFirstFormError($form);
+        return JsonApiResponse::error($error_message, Response::HTTP_CREATED);
 
     }
 
@@ -138,34 +129,37 @@ class CompanyController extends AbstractController
             $this->entityManager->persist($companyEntity);
             $this->entityManager->flush();
     
-            return new JsonResponse(
-                            JsonApiResponse::success(Response::HTTP_OK,[],'Empresa editada com sucesso'), 
-                        Response::HTTP_OK, [], false);
+            $success_message = "Empresa editada com sucesso";
+            return JsonApiResponse::success($success_message, [], Response::HTTP_CREATED);
         }
 
-        return new JsonResponse(
-                    JsonApiResponse::error(Response::HTTP_BAD_REQUEST,ErrorsFormResponse::getFirstFormError($form)), 
-                Response::HTTP_BAD_REQUEST);
+        $error_message = ErrorsFormResponse::getFirstFormError($form);
+        return JsonApiResponse::error($error_message, Response::HTTP_CREATED);
 
     }
 
     #[Route('/company/delete/{id}', name: 'app_company_delete', methods: ['DELETE'])]
-    public function delete($id, CompanyRepository $companyRepository): Response
+    public function delete($id, CompanyRepository $companyRepository, PartnerCompanyRepository $partnerCompanyRepository): Response
     {
         $companyEntity = $companyRepository->findOneById($id);
 
         if(!$companyEntity){
-            return new JsonResponse(
-                    JsonApiResponse::error(Response::HTTP_BAD_REQUEST, 'Empresa não encontrada'),
-                Response::HTTP_BAD_REQUEST);
+            $error_message = 'Empresa não encontrada';
+            return JsonApiResponse::error($error_message, Response::HTTP_BAD_REQUEST);
+        }
+
+        //Remoção das sociedades
+        $items = $partnerCompanyRepository->findPartnerByCompany($companyEntity);
+
+        foreach ($items as $item) {
+            $companyPartnerEntity = $partnerCompanyRepository->findOneById((int)$item['PC_ID']);
+            $this->entityManager->remove($companyPartnerEntity);
         }
 
         $this->entityManager->remove($companyEntity);
         $this->entityManager->flush();
 
-        
-        return new JsonResponse(
-            JsonApiResponse::success(Response::HTTP_OK,[],'Empresa excluida com sucesso'), 
-        Response::HTTP_OK, [], false);
+        $success_message = "Empresa excluida com sucesso";
+        return JsonApiResponse::success($success_message, [], Response::HTTP_CREATED);
     }
 }
