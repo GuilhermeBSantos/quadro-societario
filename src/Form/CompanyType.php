@@ -6,13 +6,14 @@ use App\Entity\Company;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+/**
+ * Aqui é validado as informações de empresa em caso de cadastro e edição
+ */
 class CompanyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

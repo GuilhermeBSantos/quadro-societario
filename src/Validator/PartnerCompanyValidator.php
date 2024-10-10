@@ -2,9 +2,11 @@
 
 namespace App\Validator;
 
-use App\Response\JsonApiResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Classe para validar relação entre Empresa e Sócio
+ */
 class PartnerCompanyValidator
 {
     public static function validFields(array $data) : array

@@ -16,20 +16,9 @@ class UsersRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Users::class);
     }
-
-    //    /**
-    //     * @return Users[] Returns an array of Users objects
-    //     */
     
-    /* public function findByExampleField($value): array
-    {
-
-    } */
-
     /**
-     * @param int $page
-     * @param int $limit
-     * @return Paginator
+     * Busca de usuário com pagina
      */
     public function findPaginated(int $page = 1, int $limit = 10): Paginator
     {
@@ -43,6 +32,10 @@ class UsersRepository extends ServiceEntityRepository
         return new Paginator($query, true);
     }
     
+    
+    /**
+     * Checar se já existe um usuário na base de dados
+     */
     public function countUsersByFirstUse(): int
     {
         $fields = $this->createQueryBuilder('u')
@@ -54,6 +47,9 @@ class UsersRepository extends ServiceEntityRepository
         return count($fields);
     }
 
+    /**
+     * Buscar usuário por ID
+     */
     public function findOneById($value): ?Users
     {
         return $this->createQueryBuilder('u')
@@ -63,6 +59,10 @@ class UsersRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+
+    /**
+     * Buscar usuário por E-mail
+     */
     public function findOneByEmail($value): ?Users
     {
         return $this->createQueryBuilder('u')

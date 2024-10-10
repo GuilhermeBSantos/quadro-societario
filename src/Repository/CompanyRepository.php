@@ -8,7 +8,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Company>
+ * Repositorio de empresas
  */
 class CompanyRepository extends ServiceEntityRepository
 {
@@ -16,15 +16,9 @@ class CompanyRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Company::class);
     }
-
-    //    /**
-    //     * @return Company[] Returns an array of Company objects
-    //     */
-
+    
     /**
-     * @param int $page
-     * @param int $limit
-     * @return Paginator
+     * Busca de empresa com paginas e busca
      */
     public function findPaginated(int $page = 1, int $limit = 10, $key = '', $search = ''): Paginator
     {
@@ -43,8 +37,10 @@ class CompanyRepository extends ServiceEntityRepository
 
         return new Paginator($query, true);
     }
-
     
+    /**
+     * Buscar empresa por ID
+     */
     public function findOneById($id): ?Company
     {
         return $this->createQueryBuilder('c')
@@ -54,6 +50,9 @@ class CompanyRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
     
+    /**
+     * Buscar empresa por CNPJ
+     */
     public function findOneByCnpj($cnpj): ?Company
     {
         return $this->createQueryBuilder('c')

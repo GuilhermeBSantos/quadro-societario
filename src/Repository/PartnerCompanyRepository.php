@@ -9,7 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<PartnerCompany>
+ * Repositório de relações entre empresa e sócio
  */
 class PartnerCompanyRepository extends ServiceEntityRepository
 {
@@ -17,7 +17,10 @@ class PartnerCompanyRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, PartnerCompany::class);
     }
-
+    
+    /**
+     * Encontrar relação de empresa e sócio por ID
+     */
     public function findOneById($id): ?PartnerCompany
     {
         return $this->createQueryBuilder('pa')
@@ -26,7 +29,10 @@ class PartnerCompanyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-    
+
+    /**
+     * Total de participação de empresa
+     */
     public function getTotalParticipationByCompany($company): float
     {
         $qb = $this->createQueryBuilder('pa')
@@ -37,6 +43,9 @@ class PartnerCompanyRepository extends ServiceEntityRepository
         return (float) $qb->getQuery()->getSingleScalarResult();
     }
 
+    /**
+     * Checar se já existe uma relação entre um sócio e uma empresa
+     */
     public function checkPartnerCompanyExists($data): ?PartnerCompany
     {
         return $this->createQueryBuilder('pa')
@@ -47,7 +56,10 @@ class PartnerCompanyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-
+    
+    /**
+     * Buscar sócios por empresa
+     */
     public function findPartnerByCompany(Company $company): array
     {
         return $this->createQueryBuilder('pa')
@@ -58,8 +70,10 @@ class PartnerCompanyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
     
+    /**
+     * Buscar empresas por sócio
+     */
     public function findCompanyByPartner(Partner $partner): array
     {
         return $this->createQueryBuilder('pa')
@@ -70,29 +84,4 @@ class PartnerCompanyRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-    //    /**
-    //     * @return PartnerCompany[] Returns an array of PartnerCompany objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?PartnerCompany
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

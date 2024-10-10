@@ -8,7 +8,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Partner>
+ * Repositório de sócios
  */
 class PartnerRepository extends ServiceEntityRepository
 {
@@ -16,15 +16,9 @@ class PartnerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Partner::class);
     }
-
-    //    /**
-    //     * @return Partner[] Returns an array of Partner objects
-    //     */
     
     /**
-     * @param int $page
-     * @param int $limit
-     * @return Paginator
+     * Busca de sócios com paginas e busca
      */
     public function findPaginated(int $page = 1, int $limit = 10, $key = '', $search = ''): Paginator
     {
@@ -43,7 +37,10 @@ class PartnerRepository extends ServiceEntityRepository
 
         return new Paginator($query, true);
     }
-
+    
+    /**
+     * Buscar sócio por ID
+     */
     public function findOneById($id): ?Partner
     {
         return $this->createQueryBuilder('p')
@@ -52,7 +49,10 @@ class PartnerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-
+    
+    /**
+     * Buscar empresa por CPF
+     */
     public function findOneByCpf($cpf): ?Partner
     {
         return $this->createQueryBuilder('p')
@@ -61,7 +61,10 @@ class PartnerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-
+    
+    /**
+     * Buscar empresa por E-mail
+     */
     public function findOneByEmail($email): ?Partner
     {
         return $this->createQueryBuilder('p')

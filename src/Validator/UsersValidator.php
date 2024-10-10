@@ -4,6 +4,9 @@ namespace App\Validator;
 
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Classe para validar usuários
+ */
 class UsersValidator
 {
     public static function validFields(array $data) : array

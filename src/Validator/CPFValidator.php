@@ -2,6 +2,9 @@
 
 namespace App\Validator;
 
+/**
+ * Classe para validar o CPF
+ */
 class CPFValidator
 {
     public static function isValidCpf($cpf)

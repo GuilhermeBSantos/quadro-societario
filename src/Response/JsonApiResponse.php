@@ -5,6 +5,9 @@ namespace App\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Aqui é os retornos de API em json para o servidor
+ */
 class JsonApiResponse
 {
     public static function paginated($data, $currentPage, $totalPages): JsonResponse

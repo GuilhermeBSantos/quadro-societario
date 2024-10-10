@@ -11,7 +11,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-
+/**
+ * Aqui é validado as informações de um usuário para edição (quando não é validado a senha)
+ */
 class UsersTypeByUpdate extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

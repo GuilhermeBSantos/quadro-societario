@@ -4,6 +4,9 @@ namespace App\Response;
 
 use Symfony\Component\Form\FormInterface;
 
+/**
+ * Aqui é uma classe para validar erros do formulario
+ */
 class ErrorsFormResponse
 {
     public static function getFirstFormError(FormInterface $form): ?string
